@@ -11,4 +11,8 @@ class Kevin(Hero):
         super().__init__(h, a, d, sp)
 
     def action(self):
-        #
+        # 状态结算
+        
+        # 角色行动
+
+        # 状态更新
