@@ -1,3 +1,5 @@
+import random
+
 class Hero:
     """
     英桀的基类，定义基本属性和基本框架
@@ -19,12 +21,11 @@ class Hero:
         self.status.update({'silenced': 0})     # 沉默(阿波尼亚): 本回合内主被动均失效，只能使用普通攻击，特殊标注除外
         self.status.update({'chaos': 0})        # 混乱(维尔薇): 下次普通攻击伤害返还自身，无视回合数
         self.status.update({'torn': 0})         # 撕裂(科斯魔): 每回合减少4点生命值，持续3回合，重复触发刷新状态，混乱状态下触发时状态返还自身
-        self.status.update({'shield': 0})       # 护盾(格蕾修): 抵挡伤害
         self.status.update({'charge': 0})   # 蓄力(华): 本回合不进行攻击，自身至下次行动前防御力提升3点，下次攻击时额外造成10~33点元素伤害(此伤害不受混乱状态影响)
 
     def suffer(self, physical=0, elemental=0, loss=0):
         """
-        角色受到伤害
+        角色受到伤害(通用)，华、樱和格蕾修不适用
         :param physical: 物理伤害，需要经过防御减免
         :param elemental: 元素伤害，不受防御减免
         :param loss: 生命流失，不受防御减免
@@ -45,6 +46,7 @@ class Hero:
         if self.health <= 0:
             self.health = 0
             return True
+        print("{0} suffers: physical {1}, elemental {2}, loss {3}".format(type(self).__name__, physical, elemental, loss))
         return False
 
     def heal(self, val):
@@ -56,10 +58,13 @@ class Hero:
         self.health += val
         if self.health > 100:
             self.health = 100
+        print("{0} heals: {1}".format(type(self).__name__, val))
 
-    def action(self):
+    def action(self, turns, opnt):
         """
         角色在本回合可以进行的操作，包括状态结算、普通攻击、主动技能、被动技能
+        :param turns: 当前回合数
+        :param opnt: 对手的实例化对象
         :return: 角色在本回合实际进行的行动; 0 -> 未行动; 1 -> 普通攻击; 2 -> 释放技能
         """
         pass
@@ -71,13 +76,13 @@ class Hero:
         if self.status['weak'] == 1:
             self.attack -= 6
         if self.status['torn'] >= 0:
-            self.health -= 6
+            self.suffer(loss=4)
         if self.status['accumulate'] >= 0:
             self.defence += 3
 
     def status_change(self, action):
         """
-        计算角色在本回合结束时，状态层数的变化，不包括护盾
+        计算角色在本回合结束时，状态层数的变化
         :param action: 角色本回合的实际行动
         """
         if self.status['weak'] >= 0 and action != 0:
@@ -92,4 +97,5 @@ class Hero:
         if self.status['torn'] > 0:
             self.status['torn'] -= 1
         if self.status['charge'] == 1 and action == 1:
+            self.defence -= 3
             self.status['charge'] = 0

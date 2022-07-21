@@ -11,7 +11,7 @@ class Mobius(Hero):
     def __init__(self, h=100, a=21, d=11, sp=23):
         super().__init__(h, a, d, sp)
 
-    def action(self):
+    def action(self, turns, opnt):
         # 状态结算
 
         # 角色行动

@@ -11,7 +11,7 @@ class Sakura(Hero):
     def __init__(self, h=100, a=24, d=10, sp=27):
         super().__init__(h, a, d, sp)
 
-    def action(self):
+    def action(self, turns, opnt):
         # 状态结算
 
         # 角色行动
