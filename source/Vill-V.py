@@ -11,9 +11,13 @@ class VillV(Hero):
     def __init__(self, h=100, a=20, d=12, sp=25):
         super().__init__(h, a, d, sp)
 
-    def action(self):
+    def action(self, turns, opnt):
         # 状态结算
+        self.status_effect()
+        # 行动判定
+        act = self.decide_action(turns, 3)
+        # 伤害计算
 
-        # 角色行动
+        # 伤害结算
 
         # 状态更新

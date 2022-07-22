@@ -13,7 +13,11 @@ class Sakura(Hero):
 
     def action(self, turns, opnt):
         # 状态结算
+        self.status_effect()
+        # 行动判定
+        act = self.decide_action(turns, 3)
+        # 伤害计算
 
-        # 角色行动
+        # 伤害结算
 
         # 状态更新

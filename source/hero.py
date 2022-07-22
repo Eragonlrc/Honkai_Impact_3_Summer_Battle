@@ -1,5 +1,6 @@
 import random
 
+
 class Hero:
     """
     英桀的基类，定义基本属性和基本框架
@@ -65,7 +66,6 @@ class Hero:
         角色在本回合可以进行的操作，包括状态结算、普通攻击、主动技能、被动技能
         :param turns: 当前回合数
         :param opnt: 对手的实例化对象
-        :return: 角色在本回合实际进行的行动; 0 -> 未行动; 1 -> 普通攻击; 2 -> 释放技能
         """
         pass
 
@@ -80,19 +80,34 @@ class Hero:
         if self.status['accumulate'] >= 0:
             self.defence += 3
 
+    def decide_action(self, turns, cd):
+        """
+        判定角色在本回合的行动
+        :param turns: 当前回合数
+        :param cd: 角色主动技能冷却时间
+        :return: 角色本回合的实际行动; 0->无行动, 1->普通攻击, 2->主动技能
+        """
+        if self.status['skip'] == 1:    # 跳过
+            self.status['skip'] = 0
+            return 0
+        elif self.status['silenced'] == 1:  # 沉默
+            self.status['silenced'] = 0
+            return 1
+        elif turns % cd == 0:    # 主动技能
+            return 2
+        else:
+            return 1
+
     def status_change(self, action):
         """
         计算角色在本回合结束时，状态层数的变化
         :param action: 角色本回合的实际行动
         """
-        if self.status['weak'] >= 0 and action != 0:
+        if self.status['weak'] == 1:    # 无论如何，回合开始时减少的攻击力要加回来
             self.attack += 6
-            self.status['weak'] = 0
-        if self.status['skip'] == 1:
-            self.status['skip'] = 0
-        if self.status['silenced'] == 1:
-            self.status['silenced'] = 0
-        if self.status['chaos'] == 1 and action == 1:
+            if action != 0:     # 如果本回合行动了，可以把状态清除
+                self.status['weak'] = 0
+        if self.status['chaos'] == 1 and action == 1:   # 只有在一次混乱状态下的普攻后，混乱状态才会消失
             self.status['chaos'] = 0
         if self.status['torn'] > 0:
             self.status['torn'] -= 1
