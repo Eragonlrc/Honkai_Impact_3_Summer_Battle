@@ -11,14 +11,12 @@ from Mobius import Mobius
 from Pardofelis import Pardofelis
 from Sakura import Sakura
 from VillV import VillV
-ca, cs = 0, 0
-for i in range(100000):
-    s = Sakura()
-    a = Aponia()
-    b = Battle(s, a)
+c = 0
+for i in range(1000000):
+    e = Elysia()
+    g = Griseo()
+    b = Battle(e, g)
     b.run()
-    if b.winner.name == '阿波尼亚':
-        ca += 1
-    else:
-        cs += 1
-print('阿波尼亚胜率：' + str(ca/100000))
+    if b.winner.name == '爱莉希雅':
+        c += 1
+print('爱莉希雅胜率：' + str(c/1000000))

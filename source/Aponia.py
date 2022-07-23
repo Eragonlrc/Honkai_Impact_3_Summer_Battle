@@ -31,18 +31,19 @@ class Aponia(Hero):
             opnt.status['skip'] = 1
         # 伤害结算
         if self.status['chaos'] == 1 and act == 1:   # 混乱
-            self.suffer(phy)
-        else:
-            opnt.suffer(phy)
+            self.suffer(self, phy)
+        elif act != 0:
+            opnt.suffer(self, phy)
+        if opnt.health == 0:    # 对方战败
+            return
         # 被动判定
         if self.status['skip'] + self.status['silenced'] == 0:  # 不被跳过、沉默
-            if act != 0:  # 自身攻击过
-                if random.randint(1, 10) <= 3:  # 30%概率
-                    if self.status['chaos'] == 1:   # 混乱状态
-                        print("阿波尼亚被沉默，本回合无法使用技能")
-                        self.status['silenced'] = 1
-                    else:
-                        print(opnt.name + "被沉默，本回合无法使用技能")
-                        opnt.status['silenced'] = 1
+            if random.randint(1, 10) <= 3:  # 30%概率
+                if self.status['chaos'] == 1:   # 混乱状态
+                    print("阿波尼亚被沉默，本回合无法使用技能")
+                    self.status['silenced'] = 1
+                else:
+                    print(opnt.name + "被沉默，本回合无法使用技能")
+                    opnt.status['silenced'] = 1
         # 状态更新
         self.status_change(act)

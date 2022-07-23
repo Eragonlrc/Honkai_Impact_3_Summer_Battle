@@ -27,13 +27,15 @@ class Kevin(Hero):
             ele = 25
         # 伤害结算
         if self.status['chaos'] == 1 and act == 1:   # 混乱
-            self.suffer(phy, ele)
-        else:
-            opnt.suffer(phy, ele)
+            self.suffer(self, phy)
+        elif act != 0:
+            opnt.suffer(self, phy, ele)
         # 被动判定
+        if opnt.health == 0:    # 对方战败
+            return
         if self.status['skip'] + self.status['silenced'] + self.status['chaos'] == 0:   # 不被跳过、沉默、混乱
-            if act != 0 and opnt.health <= 30:  # 自身攻击过、对方血量低于30%
+            if opnt.health <= 30:  # 对方血量低于30%
                 if random.randint(1, 10) <= 3:  # 30%概率
-                    opnt.suffer(elemental=999)  # 其实不太严谨，没考虑华和格蕾修，但是够用了
+                    opnt.execute()
         # 状态更新
         self.status_change(act)
