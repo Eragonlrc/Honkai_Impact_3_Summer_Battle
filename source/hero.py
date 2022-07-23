@@ -1,11 +1,12 @@
 import random
 
 
-class Hero:
+class Hero(object):
     """
     英桀的基类，定义基本属性和基本框架
     """
     def __init__(self, h=0, a=0, d=0, sp=0):
+        self.name = ""
         self.health = h
         self.attack = a
         self.defence = d
@@ -22,7 +23,8 @@ class Hero:
         self.status.update({'silenced': 0})     # 沉默(阿波尼亚): 本回合内主被动均失效，只能使用普通攻击，特殊标注除外
         self.status.update({'chaos': 0})        # 混乱(维尔薇): 下次普通攻击伤害返还自身，无视回合数
         self.status.update({'torn': 0})         # 撕裂(科斯魔): 每回合减少4点生命值，持续3回合，重复触发刷新状态，混乱状态下触发时状态返还自身
-        self.status.update({'charge': 0})   # 蓄力(华): 本回合不进行攻击，自身至下次行动前防御力提升3点，下次攻击时额外造成10~33点元素伤害(此伤害不受混乱状态影响)
+        self.status.update({'charge': 0})       # 蓄力(华): 本回合不进行攻击，自身至下次行动前防御力提升3点，下次攻击时额外造成10~33点元素伤害(此伤害不受混乱状态影响)
+        self.status.update({'miss': 0})         # 闪避(樱): 闪避本回合所有攻击
 
     def suffer(self, physical=0, elemental=0, loss=0):
         """
@@ -30,25 +32,22 @@ class Hero:
         :param physical: 物理伤害，需要经过防御减免
         :param elemental: 元素伤害，不受防御减免
         :param loss: 生命流失，不受防御减免
-        :return: 角色是否战败
+        :return: 无
         """
         # 物理伤害结算
         self.health -= physical - self.defence
         if self.health <= 0:
             self.health = 0
-            return True
+        if physical > 0:
+            print("造成" + str(physical - self.defence) + "点伤害，" + self.name + "剩余生命值" + str(self.health))
         # 元素伤害结算
         self.health -= elemental
         if self.health <= 0:
             self.health = 0
-            return True
         # 生命流失结算
         self.health -= loss
         if self.health <= 0:
             self.health = 0
-            return True
-        print("{0} suffers: physical {1}, elemental {2}, loss {3}".format(type(self).__name__, physical, elemental, loss))
-        return False
 
     def heal(self, val):
         """
@@ -59,7 +58,7 @@ class Hero:
         self.health += val
         if self.health > 100:
             self.health = 100
-        print("{0} heals: {1}".format(type(self).__name__, val))
+        print(self.name + "回复" + str(val) + "点生命值，当前生命值" + str(self.health))
 
     def action(self, turns, opnt):
         """
@@ -75,9 +74,9 @@ class Hero:
         """
         if self.status['weak'] == 1:
             self.attack -= 6
-        if self.status['torn'] >= 0:
+        if self.status['torn'] > 0:
             self.suffer(loss=4)
-        if self.status['accumulate'] >= 0:
+        if self.status['charge'] == 1:
             self.defence += 3
 
     def decide_action(self, turns, cd):
@@ -89,6 +88,7 @@ class Hero:
         """
         if self.status['skip'] == 1:    # 跳过
             self.status['skip'] = 0
+            print(self.name + "本回合无法行动")
             return 0
         elif self.status['silenced'] == 1:  # 沉默
             self.status['silenced'] = 0
@@ -111,6 +111,7 @@ class Hero:
             self.status['chaos'] = 0
         if self.status['torn'] > 0:
             self.status['torn'] -= 1
-        if self.status['charge'] == 1 and action == 1:
-            self.defence -= 3
+        if self.status['charge'] == 1 and action != 0:  # 华蓄力结束时防御力的减少需要在行动前进行
             self.status['charge'] = 0
+        if self.status['miss'] == 1:
+            self.status['miss'] = 0
