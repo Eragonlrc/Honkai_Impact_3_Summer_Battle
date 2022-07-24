@@ -36,7 +36,7 @@ class Aponia(Hero):
         if opnt.health == 0:    # 对方战败
             return
         # 被动判定
-        if self.status['skip'] + self.status['silenced'] == 0:  # 不被跳过、沉默
+        if act == 1 and self.status['silenced'] == 0:  # 未被沉默且普通攻击(主动技能时显示封印，不必再显示沉默)
             if random.randint(1, 10) <= 3:  # 30%概率
                 if self.status['chaos'] == 1:   # 混乱状态
                     print("阿波尼亚被沉默，本回合无法使用技能")
