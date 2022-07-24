@@ -1,5 +1,4 @@
 import random
-
 from hero import Hero
 
 
@@ -23,34 +22,29 @@ class Elysia(Hero):
         # 伤害计算
         phy = 0
         if act == 1:    # 普通攻击
-            print("爱莉希雅对" + opnt.name + "普攻，", end="")
             phy = self.attack
         elif act == 2:  # 夏梦之花
-            print("爱莉希雅发动技能[夏梦之花]")
-            print("爱莉希雅对" + opnt.name, end="")
             phy = random.randint(25, 50)
-            opnt.status['weak'] = 1
         # 伤害结算
         if act == 1:
-            if self.status['chaos'] == 1:
-                print("爱莉希雅对爱莉希雅", end="")
-                self.suffer(self, phy)
-            else:
-                opnt.suffer(self, phy)
+            self.basic_attack(opnt, phy)
         elif act == 2:
+            print("爱莉希雅发动技能[夏梦之花]")
+            print("爱莉希雅对" + opnt.name, end="")
             opnt.suffer(self, phy)
             print(opnt.name + "下次行动时攻击力下降6点")
+            opnt.status['weak'] = 1
         if opnt.health == 0:    # 对方战败
             return
         # 被动判定
         if self.status['skip'] + self.status['silenced'] == 0:  # 不被跳过、沉默
             if random.randint(1, 20) <= 7:  # 35%概率
                 print("爱莉希雅发动技能[水花溅射]")
+                print("爱莉希雅对" + opnt.name + "追加一次溅射攻击，", end="")
                 if self.status['chaos'] == 1:   # 混乱状态下伤害返还
-                    print("爱莉希雅对爱莉希雅", end="")
+                    print("混乱状态生效，爱莉希雅对爱莉希雅", end="")
                     self.suffer(self, elemental=11)
                 else:
-                    print("爱莉希雅对" + opnt.name + "追加一次溅射攻击，", end="")
                     opnt.suffer(self, elemental=11)
         # 状态更新
         self.status_change(act)

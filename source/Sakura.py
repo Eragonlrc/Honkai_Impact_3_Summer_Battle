@@ -15,20 +15,17 @@ class Sakura(Hero):
         super().__init__(h, a, d, sp)
         self.name = "樱"
 
-    def suffer(self, opnt, physical=0, elemental=0, loss=0):
+    def suffer(self, opnt, physical=0, elemental=0):
         """
         樱的被动通过重构suffer函数实现
         """
-        if loss == 0:   # 若伤害来源为攻击而非生命流失，且自身未被封印或昏迷
-            if self.status['skip'] == 0:    # 自身未被封印或昏迷
-                if random.randint(1, 20) <= 3:  # 15%概率
-                    self.status['miss'] = 1
-            if self.status['miss'] == 1:
-                print('樱闪避本次攻击')
-            else:
-                super(Sakura, self).suffer(opnt, physical=physical, elemental=elemental)
-        else:   # 生命流失伤害，被动无效
-            super(Sakura, self).suffer(opnt, loss=loss)
+        if self.status['skip'] == 0:    # 自身未被封印或昏迷
+            if random.randint(1, 20) <= 3:  # 15%概率
+                self.status['miss'] = 1
+        if self.status['miss'] == 1:    # 本回合的所有攻击都会被闪避
+            print('樱闪避本次攻击')
+        else:
+            super(Sakura, self).suffer(opnt, physical=physical, elemental=elemental)
 
     def action(self, turns, opnt: Hero):
         # 状态结算
@@ -38,20 +35,18 @@ class Sakura(Hero):
         # 伤害计算
         phy, val = 0, 0
         if act == 1:    # 普通攻击
-            print("樱对" + opnt.name + "普攻，", end="")
             phy = self.attack
         elif act == 2:  # 夏之型·瓜切
-            print("樱发动技能[夏之型·瓜切]")
             val = random.randint(1, 5)
-            self.heal(val)
-            print("樱对" + opnt.name, end="")
             phy = int(self.attack * 1.3)
         # 伤害结算
-        if self.status['chaos'] == 1 and act == 1:   # 混乱
-            print("樱对樱", end="")
-            self.suffer(self, phy)
-        elif act != 0:
-            opnt.suffer(self, phy)
+        if act == 1:
+            self.basic_attack(opnt, phy)
+        elif act == 2:
+            print("樱发动技能[夏之型·瓜切]")
+            self.heal(val)
+            print("樱对" + opnt.name, end="")
+            opnt.suffer(self, physical=phy)
         if opnt.health == 0:    # 对方战败
             return
         # 状态更新

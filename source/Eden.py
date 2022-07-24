@@ -1,3 +1,4 @@
+import random
 from hero import Hero
 
 
@@ -13,13 +14,41 @@ class Eden(Hero):
         super().__init__(h, a, d, sp)
         self.name = "伊甸"
 
-    def action(self, turns, opnt):
+    def action(self, turns, opnt: Hero):
         # 状态结算
         self.status_effect()
         # 行动判定
-        act = self.decide_action(turns, 3)
+        act = self.decide_action(turns, 2)
         # 伤害计算
-
+        phy = 0
+        if act == 1:    # 普通攻击
+            phy = self.attack
+        elif act == 2:  # 闪亮登场
+            self.attack += 4
+            phy = self.attack
+            self.speed = 99
         # 伤害结算
-
+        if act == 1:
+            self.basic_attack(opnt, phy)
+        elif act == 2:
+            print("伊甸发动技能[闪亮登场]")
+            print("伊甸攻击力永久提升4点，当前攻击力" + str(self.attack))
+            print("下回合伊甸先攻")
+            self.basic_attack(opnt, phy)
+        if opnt.health == 0:    # 对方战败
+            return
+        # 被动判定
+        if self.status['skip'] + self.status['silenced'] == 0:  # 不被跳过、沉默
+            if random.randint(1, 2) <= 1:   # 50%概率
+                print("伊甸发动技能[海边协奏]")
+                print("伊甸对" + opnt.name + "追加一次普攻，")
+                if self.status['weak'] == 1:    # 特殊情况：伊甸的追加攻击不受爱莉希雅的虚弱影响
+                    phy += 6
+                if self.status['chaos'] == 1:   # 由于文本不同，不能调basic_attack
+                    print("混乱状态生效，伊甸对伊甸", end="")
+                    self.suffer(self, physical=phy)
+                    self.status['chaos'] = 0
+                else:
+                    opnt.suffer(self, physical=phy)
         # 状态更新
+        self.status_change(act)

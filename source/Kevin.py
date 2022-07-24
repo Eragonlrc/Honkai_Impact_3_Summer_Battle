@@ -13,7 +13,7 @@ class Kevin(Hero):
         super().__init__(h, a, d, sp)
         self.name = "凯文"
 
-    def action(self, turns, opnt):
+    def action(self, turns, opnt: Hero):
         # 状态结算
         self.status_effect()
         # 行动判定
@@ -26,15 +26,19 @@ class Kevin(Hero):
             self.attack += 5
             ele = 25
         # 伤害结算
-        if self.status['chaos'] == 1 and act == 1:   # 混乱
-            self.suffer(self, phy)
-        elif act != 0:
-            opnt.suffer(self, phy, ele)
-        # 被动判定
+        if act == 1:
+            self.basic_attack(opnt, phy)
+        elif act == 2:
+            print("凯文发动技能[清凉一剑]")
+            print("凯文攻击力提升5点，当前攻击力" + str(self.attack))
+            print("凯文对" + opnt.name, end="")
+            opnt.suffer(elemental=ele)
         if opnt.health == 0:    # 对方战败
             return
+        # 被动判定
         if self.status['skip'] + self.status['silenced'] + self.status['chaos'] == 0:   # 不被跳过、沉默、混乱
             if opnt.health <= 30:  # 对方血量低于30%
+                print("凯文发动技能[炎热归零]")
                 if random.randint(1, 10) <= 3:  # 30%概率
                     opnt.execute()
         # 状态更新

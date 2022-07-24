@@ -19,13 +19,19 @@ class Battle(object):
         while True:
             self.turn += 1
             print("回合"+str(self.turn))
+            if self.player1.speed < self.player2.speed:     # 此处特判伊甸的先攻
+                if self.player2.speed == 99:    # 实现得比较烂，但凑合能用
+                    self.player2.speed = 16
+                self.player1, self.player2 = self.player2, self.player1
+            # 英桀1行动
             self.player1.action(self.turn, self.player2)
-            if self.player2.health == 0:
+            if self.player2.health == 0:    # 注意同归于尽时，生命值先降为0的英桀输，而先结算的是本回合行动方造成的伤害，因此优先看对方是否生命为0
                 self.winner = self.player1
                 break
             elif self.player1.health == 0:
                 self.winner = self.player2
                 break
+            # 英桀2行动
             self.player2.action(self.turn, self.player1)
             if self.player1.health == 0:
                 self.winner = self.player2

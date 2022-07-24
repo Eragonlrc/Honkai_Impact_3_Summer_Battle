@@ -1,5 +1,4 @@
 import random
-
 from hero import Hero
 
 
@@ -15,7 +14,7 @@ class Hua(Hero):
         super().__init__(h, a, d, sp)
         self.name = "华"
 
-    def suffer(self, opnt, physical=0, elemental=0, loss=0):
+    def suffer(self, opnt, physical=0, elemental=0):
         """
         华的被动技能通过重构suffer函数实现
         """
@@ -33,9 +32,6 @@ class Hua(Hero):
         if elemental > 0:
             elemental = round(elemental * 0.8)
             super(Hua, self).suffer(opnt, elemental=elemental)
-        # 生命流失结算，无视减伤
-        if loss > 0:
-            super(Hua, self).suffer(opnt, loss=loss)
 
     def action(self, turns, opnt: Hero):
         # 状态结算
@@ -45,29 +41,32 @@ class Hua(Hero):
         # 伤害计算
         phy, ele = 0, 0
         if act == 1:    # 普通攻击
-            print("华对" + opnt.name + "普攻，", end="")
             if self.status['charge'] == 1:  # 蓄力附加元素伤害
                 ele = random.randint(10, 33)
             phy = self.attack
         elif act == 2:  # 上伞若水
-            print("华发动技能[上伞若水]")
-            print("华至下次行动前防御力提升3点，", end="")
+            pass    # 无伤害
         # 伤害结算
         if act != 0 and self.status['charge'] == 1:     # 行动前消除蓄力状态
             self.status['charge'] = 0
             self.defence -= 3
         if act == 1:
+            print("华对" + opnt.name + "普攻，", end="")
             if self.status['chaos'] == 1:
-                print("华对华", end="")
-                super(Hua, self).suffer(self, phy)    # 混乱状态下华对自己的伤害不受被动减免
+                print("混乱状态生效，华对华", end="")
+                super(Hua, self).suffer(opnt, phy)    # 混乱状态下华对自己的伤害不受被动减免(很不合理，但确实如此)
             else:
                 opnt.suffer(self, phy)
-            if ele > 0:     # 此时蓄力状态已经消失，若ele > 0则表明需要附加元素伤害
+            if ele > 0 and self.status['silenced'] == 0:     # 此时蓄力状态已经消失，若ele>0则表明需要附加元素伤害；沉默时不附加伤害
                 print("蓄力生效，华对" + opnt.name + "额外", end="")
                 opnt.suffer(self, elemental=ele)    # 附加元素伤害不受混乱影响
         elif act == 2:
+            print("华发动技能[上伞若水]")
+            print("华至下次行动前防御力提升3点，", end="")
             self.status['charge'] = 1
             self.defence += 3
             print("当前防御" + str(self.defence))
+        if opnt.health == 0:    # 对方战败
+            return
         # 状态更新
         self.status_change(act)

@@ -22,18 +22,17 @@ class Aponia(Hero):
         # 伤害计算
         phy = 0
         if act == 1:    # 普通攻击
-            print("阿波尼亚对" + opnt.name + "普攻，", end="")
             phy = self.attack
         elif act == 2:  # 深蓝之槛
+            phy = int(self.attack * 1.7)
+        # 伤害结算
+        if act == 1:
+            self.basic_attack(opnt, phy)
+        elif act == 2:
             print("阿波尼亚发动技能[深蓝之槛]")
             print("阿波尼亚对" + opnt.name, end="")
-            phy = int(self.attack * 1.7)
+            opnt.suffer(self, physical=phy)
             opnt.status['skip'] = 1
-        # 伤害结算
-        if self.status['chaos'] == 1 and act == 1:   # 混乱
-            self.suffer(self, phy)
-        elif act != 0:
-            opnt.suffer(self, phy)
         if opnt.health == 0:    # 对方战败
             return
         # 被动判定

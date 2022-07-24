@@ -12,12 +12,12 @@ from Pardofelis import Pardofelis
 from Sakura import Sakura
 from VillV import VillV
 c = 0
-t = 100000
+t = 1000000
 for i in range(t):
-    h = Hua()
+    e = Elysia()
     a = Aponia()
-    b = Battle(h, a)
+    b = Battle(e, a)
     b.run()
-    if b.winner.name == '华':
+    if b.winner.name == '爱莉希雅':
         c += 1
-print('华胜率：' + str(c/t))
+print('爱莉希雅胜率：' + str(c/t))

@@ -1,5 +1,4 @@
 import random
-
 from hero import Hero
 
 
@@ -17,7 +16,7 @@ class Griseo(Hero):
         self.shield = 0     # 护盾值
         self.defence_plus = 0   # 额外防御力
 
-    def suffer(self, opnt, physical=0, elemental=0, loss=0):
+    def suffer(self, opnt, physical=0, elemental=0):
         """
         格蕾修护盾通过重构suffer函数实现
         """
@@ -57,9 +56,6 @@ class Griseo(Hero):
                 thorn = int(self.defence * random.randint(200, 400) / 100)
                 print("格蕾修护盾碎裂，对" + opnt.name, end="")
                 opnt.suffer(self, physical=thorn)
-        # 生命流失结算，穿盾
-        if loss > 0:
-            super(Griseo, self).suffer(opnt, loss=loss)
 
     def action(self, turns, opnt: Hero):
         # 状态结算
@@ -67,25 +63,20 @@ class Griseo(Hero):
         # 行动判定
         act = self.decide_action(turns, 3)
         # 伤害计算
-        phy, shd= 0, 0
+        phy= 0
         if act == 1:    # 普通攻击
-            print("格蕾修对" + opnt.name + "普攻，", end="")
             phy = self.attack
+        elif act == 2:  # 水彩泡影
+            phy = self.defence
+        # 伤害结算
+        if act == 1:
+            self.basic_attack(opnt, phy)
         elif act == 2:
             print("格蕾修发动技能[水彩泡影]")
             print("格蕾修获得一个15生命值的护盾")
-            shd = self.defence
-        # 伤害结算
-        if act == 1:
-            if self.status['chaos'] == 1:
-                print("格蕾修对格蕾修", end="")
-                self.suffer(opnt, phy)  # 格蕾修由于混乱打破自己盾时，盾反伤害应该给对方
-            else:
-                opnt.suffer(self, phy)
-        elif act == 2:
             if self.shield > 0:     # 护盾重叠
                 print("格蕾修护盾重叠，对" + opnt.name, end="")
-                opnt.suffer(self, physical=shd)
+                opnt.suffer(self, physical=phy)
             self.shield = 15    # 无论是否重叠，重置为15
         if opnt.health == 0:    # 对方战败
             return
@@ -93,9 +84,9 @@ class Griseo(Hero):
         if self.status['skip'] + self.status['silenced'] == 0:  # 不被跳过、沉默
             if self.defence_plus < 10:  # 最高获得10点
                 if random.randint(1, 5) <= 2:   # 40%概率
+                    print("格蕾修发动技能[沙滩监护人]")
                     self.defence += 2
                     self.defence_plus += 2
-                    print("格蕾修发动技能[沙滩监护人]")
                     print("格蕾修防御提升2点，当前防御：" + str(self.defence))
         # 状态更新
         self.status_change(act)
