@@ -20,11 +20,11 @@ class Battle(object):
             self.turn += 1
             print("回合"+str(self.turn))
             self.player1.action(self.turn, self.player2)
-            if self.player1.health == 0:
-                self.winner = self.player2
-                break
-            elif self.player2.health == 0:
+            if self.player2.health == 0:
                 self.winner = self.player1
+                break
+            elif self.player1.health == 0:
+                self.winner = self.player2
                 break
             self.player2.action(self.turn, self.player1)
             if self.player1.health == 0:

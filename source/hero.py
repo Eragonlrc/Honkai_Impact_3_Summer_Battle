@@ -87,8 +87,6 @@ class Hero(object):
             self.attack -= 6
         if self.status['torn'] > 0:
             self.suffer(None, loss=4)
-        if self.status['charge'] == 1:
-            self.defence += 3
 
     def decide_action(self, turns, cd):
         """
@@ -124,7 +122,5 @@ class Hero(object):
             self.status['chaos'] = 0
         if self.status['torn'] > 0:
             self.status['torn'] -= 1
-        if self.status['charge'] == 1 and action != 0:  # 华蓄力结束时防御力的减少需要在行动前进行
-            self.status['charge'] = 0
         if self.status['miss'] == 1:
             self.status['miss'] = 0
