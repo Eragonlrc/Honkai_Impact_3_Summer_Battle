@@ -38,8 +38,8 @@ class Kevin(Hero):
         # 被动判定
         if self.status['skip'] + self.status['silenced'] + self.status['chaos'] == 0:   # 不被跳过、沉默、混乱
             if opnt.health <= 30:  # 对方血量低于30%
-                print("凯文发动技能[炎热归零]")
-                if random.randint(1, 10) <= 3:  # 30%概率
+                if random.random() < 0.3:  # 30%概率
+                    print("凯文发动技能[炎热归零]")
                     opnt.execute()
         # 状态更新
         self.status_change(act)

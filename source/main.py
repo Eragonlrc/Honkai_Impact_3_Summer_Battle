@@ -1,3 +1,5 @@
+import random
+
 from battle import Battle
 from Aponia import Aponia
 from Eden import Eden

@@ -39,7 +39,7 @@ class Eden(Hero):
             return
         # 被动判定
         if self.status['skip'] + self.status['silenced'] == 0:  # 不被跳过、沉默
-            if random.randint(1, 2) <= 1:   # 50%概率
+            if random.random() < 0.5:   # 50%概率
                 print("伊甸发动技能[海边协奏]")
                 print("伊甸对" + opnt.name + "追加一次普攻，")
                 if self.status['weak'] == 1:    # 特殊情况：伊甸的追加攻击不受爱莉希雅的虚弱影响

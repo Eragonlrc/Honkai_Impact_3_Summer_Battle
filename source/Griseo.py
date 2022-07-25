@@ -53,7 +53,7 @@ class Griseo(Hero):
                 if self.health < 0:
                     self.health = 0
                 print("造成" + str(elemental) + "点伤害，格蕾修剩余生命值" + str(self.health) + "，护盾破碎")
-                thorn = int(self.defence * random.randint(200, 400) / 100)
+                thorn = int(self.defence * random.uniform(2, 4))
                 print("格蕾修护盾碎裂，对" + opnt.name, end="")
                 opnt.suffer(self, physical=thorn)
 
@@ -83,7 +83,7 @@ class Griseo(Hero):
         # 被动判定
         if self.status['skip'] + self.status['silenced'] == 0:  # 不被跳过、沉默
             if self.defence_plus < 10:  # 最高获得10点
-                if random.randint(1, 5) <= 2:   # 40%概率
+                if random.random() < 0.4:   # 40%概率
                     print("格蕾修发动技能[沙滩监护人]")
                     self.defence += 2
                     self.defence_plus += 2

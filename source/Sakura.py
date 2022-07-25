@@ -20,7 +20,7 @@ class Sakura(Hero):
         樱的被动通过重构suffer函数实现
         """
         if self.status['skip'] == 0:    # 自身未被封印或昏迷
-            if random.randint(1, 20) <= 3:  # 15%概率
+            if random.random() < 0.15:  # 15%概率
                 self.status['miss'] = 1
         if self.status['miss'] == 1:    # 本回合的所有攻击都会被闪避
             print('未造成伤害，樱闪避本次攻击')

@@ -40,12 +40,12 @@ class Kosma(Hero):
                 opnt.suffer(self, elemental=ele)
         # 被动判定
         if self.status['silenced'] == 0:  # 未被沉默
-            if act == 1 and random.randint(1, 20) <= 3 or act == 2 and :     # 普攻时15%概率，主动技能时1-(85%)^4=47.799375%
+            # 普攻时15%概率，主动技能时1-(85%)^4=47.799375%
+            if act == 1 and random.random() < 0.15 or act == 2 and random.random() < 0.47799375:
                 print("科斯魔技能[不归之爪]触发，" + opnt.name + "陷入撕裂状态")
                 if self.speed > opnt.speed:
                     opnt.status['torn_buf'] = 1
                 else:
                     opnt.status['torn'] = 3
-
         # 状态更新
         self.status_change(act)

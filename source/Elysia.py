@@ -38,7 +38,7 @@ class Elysia(Hero):
             return
         # 被动判定
         if self.status['skip'] + self.status['silenced'] == 0:  # 不被跳过、沉默
-            if random.randint(1, 20) <= 7:  # 35%概率
+            if random.random() < 0.35:  # 35%概率
                 print("爱莉希雅发动技能[水花溅射]")
                 print("爱莉希雅对" + opnt.name + "追加一次溅射攻击，", end="")
                 if self.status['chaos'] == 1:   # 混乱状态下伤害返还
