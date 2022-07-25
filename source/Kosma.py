@@ -1,3 +1,4 @@
+import random
 from hero import Hero
 
 
@@ -13,13 +14,38 @@ class Kosma(Hero):
         super().__init__(h, a, d, sp)
         self.name = "科斯魔"
 
-    def action(self, turns, opnt):
+    def action(self, turns, opnt: Hero):
         # 状态结算
         self.status_effect()
         # 行动判定
-        act = self.decide_action(turns, 3)
+        act = self.decide_action(turns, 2)
         # 伤害计算
-
+        phy, ele = 0, 0
+        if act == 1:    # 普通攻击
+            phy = self.attack
+        elif act == 2:  # 邪渊之钩
+            if opnt.status['torn'] > 0:
+                ele = 3 * 4
         # 伤害结算
+        if act == 1:
+            self.basic_attack(opnt, phy)
+        elif act == 2:
+            print("科斯魔发动技能[邪渊之钩]")
+            for i in range(4):  # 4次攻击分开打印
+                phy = random.randint(11, 22)
+                print("科斯魔对" + opnt.name, end="")
+                opnt.suffer(self, physical=phy)
+            if ele > 0:
+                print(opnt.name + "处于撕裂状态，科斯魔对" + opnt.name, end="")
+                opnt.suffer(self, elemental=ele)
+        # 被动判定
+        if self.status['silenced'] == 0:  # 未被沉默
+            if act == 1 and random.randint(1, 20) <= 3 or act == 2 and :     # 普攻时15%概率，主动技能时1-(85%)^4=47.799375%
+                print("科斯魔技能[不归之爪]触发，" + opnt.name + "陷入撕裂状态")
+                if self.speed > opnt.speed:
+                    opnt.status['torn_buf'] = 1
+                else:
+                    opnt.status['torn'] = 3
 
         # 状态更新
+        self.status_change(act)

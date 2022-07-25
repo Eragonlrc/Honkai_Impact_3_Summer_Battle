@@ -23,7 +23,7 @@ class Sakura(Hero):
             if random.randint(1, 20) <= 3:  # 15%概率
                 self.status['miss'] = 1
         if self.status['miss'] == 1:    # 本回合的所有攻击都会被闪避
-            print('樱闪避本次攻击')
+            print('未造成伤害，樱闪避本次攻击')
         else:
             super(Sakura, self).suffer(opnt, physical=physical, elemental=elemental)
 

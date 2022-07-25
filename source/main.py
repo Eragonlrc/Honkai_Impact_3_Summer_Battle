@@ -12,7 +12,7 @@ from Pardofelis import Pardofelis
 from Sakura import Sakura
 from VillV import VillV
 c = 0
-t = 1000000
+t = 100000
 for i in range(t):
     e = Elysia()
     a = Aponia()

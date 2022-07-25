@@ -32,7 +32,7 @@ class Kevin(Hero):
             print("凯文发动技能[清凉一剑]")
             print("凯文攻击力提升5点，当前攻击力" + str(self.attack))
             print("凯文对" + opnt.name, end="")
-            opnt.suffer(elemental=ele)
+            opnt.suffer(self, elemental=ele)
         if opnt.health == 0:    # 对方战败
             return
         # 被动判定
