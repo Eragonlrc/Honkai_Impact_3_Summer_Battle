@@ -35,7 +35,7 @@ class Kalpas(Hero):
         elif act == 2:  # 盛夏燔祭
             phy = 45
             ele = random.randint(1, 20)
-            self.status['skip'] = 1
+            self.status['rest'] = 1
         # 伤害结算
         if act == 1:
             self.basic_attack(opnt, phy)
@@ -46,7 +46,6 @@ class Kalpas(Hero):
             opnt.suffer(self, physical=phy)
             print("千劫对" + opnt.name, end="")
             opnt.suffer(self, elemental=ele)
-            self.status['rest'] = 1
             print("千劫下回合休息")
         # 状态更新
         self.status_change(act)

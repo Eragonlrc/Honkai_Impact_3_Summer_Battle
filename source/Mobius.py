@@ -1,3 +1,5 @@
+import random
+
 from hero import Hero
 
 
@@ -13,13 +15,38 @@ class Mobius(Hero):
         super().__init__(h, a, d, sp)
         self.name = "梅比乌斯"
 
-    def action(self, turns, opnt):
+    def action(self, turns, opnt: Hero):
         # 状态结算
         self.status_effect()
         # 行动判定
         act = self.decide_action(turns, 3)
         # 伤害计算
-
+        phy = 0
+        if act == 1:    # 普通攻击
+            phy = self.attack
+        elif act == 2:  # 栖影水枪
+            phy = 33
         # 伤害结算
-
+        damage = 0
+        if act == 1:
+            damage = self.basic_attack(opnt, phy)
+        elif act == 2:
+            print("梅比乌斯发动技能[栖影水枪]")
+            print("梅比乌斯对" + opnt.name, end="")
+            opnt.suffer(self, physical=phy)
+            if random.random() < 0.33:  # 33%概率
+                opnt.status['stunned'] = 1
+        if opnt.health == 0:    # 对方战败
+            return
+        # 被动判定
+        if act == 1 and damage != 0:    # 普通攻击且造成伤害
+            if random.random() < 0.33:  # 33%概率
+                print("梅比乌斯发动技能[不稳定物质]")
+                if damage > 0:  # 未被混乱
+                    opnt.defence -= 3
+                    print(opnt.name + "防御力下降3点，当前防御" + opnt.defence)
+                elif damage < 0:  # 被混乱
+                    self.defence -= 3
+                    print("梅比乌斯防御力下降3点，当前防御" + self.defence)
         # 状态更新
+        self.status_change(act)

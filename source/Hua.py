@@ -28,10 +28,11 @@ class Hua(Hero):
             if self.health <= 0:
                 self.health = 0
             print("造成" + str(damage) + "点伤害，华剩余生命值" + str(self.health))
+            return damage
         # 元素伤害结算
         if elemental > 0:
             elemental = round(elemental * 0.8)
-            super(Hua, self).suffer(opnt, elemental=elemental)
+            return super(Hua, self).suffer(opnt, elemental=elemental)
 
     def action(self, turns, opnt: Hero):
         # 状态结算

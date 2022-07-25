@@ -19,13 +19,14 @@ class Sakura(Hero):
         """
         樱的被动通过重构suffer函数实现
         """
-        if self.status['skip'] == 0:    # 自身未被封印或昏迷
+        if self.status['sealed'] + self.status['stunned'] == 0:    # 自身未被封印或昏迷
             if random.random() < 0.15:  # 15%概率
                 self.status['miss'] = 1
         if self.status['miss'] == 1:    # 本回合的所有攻击都会被闪避
             print('未造成伤害，樱闪避本次攻击')
+            return 0
         else:
-            super(Sakura, self).suffer(opnt, physical=physical, elemental=elemental)
+            return super(Sakura, self).suffer(opnt, physical=physical, elemental=elemental)
 
     def action(self, turns, opnt: Hero):
         # 状态结算

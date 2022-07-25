@@ -32,7 +32,8 @@ class Aponia(Hero):
             print("阿波尼亚发动技能[深蓝之槛]")
             print("阿波尼亚对" + opnt.name, end="")
             opnt.suffer(self, physical=phy)
-            opnt.status['skip'] = 1
+            if self.speed > opnt.speed:     # 因为封印的是本回合，所以只有自己先攻时封印有用
+                opnt.status['sealed'] = 1
         if opnt.health == 0:    # 对方战败
             return
         # 被动判定

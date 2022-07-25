@@ -21,8 +21,7 @@ class Griseo(Hero):
         格蕾修护盾通过重构suffer函数实现
         """
         if self.shield == 0:    # 无盾
-            super(Griseo, self).suffer(opnt, physical, elemental, loss)
-            return
+            return super(Griseo, self).suffer(opnt, physical, elemental, loss)
         # 物理伤害结算
         if physical > 0:
             damage = physical - self.defence
@@ -32,15 +31,16 @@ class Griseo(Hero):
                 self.shield -= damage
                 print("造成0点伤害，格蕾修剩余生命值" + str(self.health) + "，剩余护盾" + str(self.shield))
             else:   # 破盾
-                damage -= self.shield
+                dmg = damage - self.shield
                 self.shield = 0
-                self.health -= damage
+                self.health -= dmg
                 if self.health < 0:
                     self.health = 0
-                print("造成" + str(damage) + "点伤害，格蕾修剩余生命值" + str(self.health) + "，护盾破碎")
-                thorn = int(self.defence * random.randint(200, 400) / 100)
+                print("造成" + str(dmg) + "点伤害，格蕾修剩余生命值" + str(self.health) + "，护盾破碎")
+                thorn = int(self.defence * random.uniform(2, 4))
                 print("格蕾修护盾碎裂，对" + opnt.name, end="")
                 opnt.suffer(self, physical=thorn)
+            return damage
         # 元素伤害结算
         if elemental > 0:
             if elemental < self.shield:  # 未破盾
@@ -56,6 +56,7 @@ class Griseo(Hero):
                 thorn = int(self.defence * random.uniform(2, 4))
                 print("格蕾修护盾碎裂，对" + opnt.name, end="")
                 opnt.suffer(self, physical=thorn)
+            return elemental
 
     def action(self, turns, opnt: Hero):
         # 状态结算
@@ -81,7 +82,7 @@ class Griseo(Hero):
         if opnt.health == 0:    # 对方战败
             return
         # 被动判定
-        if self.status['skip'] + self.status['silenced'] == 0:  # 不被跳过、沉默
+        if self.status['sealed'] + self.status['stunned'] + self.status['silenced'] == 0:  # 不被封印、昏迷、沉默
             if self.defence_plus < 10:  # 最高获得10点
                 if random.random() < 0.4:   # 40%概率
                     print("格蕾修发动技能[沙滩监护人]")

@@ -38,6 +38,8 @@ class Kosma(Hero):
             if ele > 0:
                 print(opnt.name + "处于撕裂状态，科斯魔对" + opnt.name, end="")
                 opnt.suffer(self, elemental=ele)
+        if opnt.health == 0:    # 对方战败
+            return
         # 被动判定
         if self.status['silenced'] == 0:  # 未被沉默
             # 普攻时15%概率，主动技能时1-(85%)^4=47.799375%
