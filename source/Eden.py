@@ -41,7 +41,7 @@ class Eden(Hero):
         if self.status['sealed'] + self.status['stunned'] + self.status['silenced'] == 0:  # 不被封印、昏迷、沉默
             if random.random() < 0.5:   # 50%概率
                 print("伊甸发动技能[海边协奏]")
-                print("伊甸对" + opnt.name + "追加一次普攻，")
+                print("伊甸对" + opnt.name + "追加一次普攻，", end="")
                 if self.status['weak'] == 1:    # 特殊情况：伊甸的追加攻击不受爱莉希雅的虚弱影响
                     phy += 6
                 if self.status['chaos'] == 1:   # 由于文本不同，不能调basic_attack

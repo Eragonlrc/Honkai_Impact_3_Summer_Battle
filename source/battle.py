@@ -1,3 +1,4 @@
+import logging
 from hero import Hero
 
 
@@ -20,7 +21,7 @@ class Battle(object):
             self.turn += 1
             print("回合"+str(self.turn))
             if self.player1.speed < self.player2.speed:     # 此处特判伊甸的先攻
-                if self.player2.speed == 99:    # 实现得比较烂，但凑合能用
+                if self.player2.speed == 99:    # 硬编码伊甸速度，实现得比较烂，但凑合能用
                     self.player2.speed = 16
                 self.player1, self.player2 = self.player2, self.player1
             # 英桀1行动

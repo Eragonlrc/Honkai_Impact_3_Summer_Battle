@@ -23,13 +23,13 @@ class Kalpas(Hero):
         # 被动判定
         if act != 0:
             print("千劫发动技能[夏之狂热]")
-            attack_plus_total = self.health // 5
+            attack_plus_total = (100 - self.health) // 5
             print("千劫攻击力永久提升" + str(attack_plus_total - self.attack_plus), end="，")
             self.attack += attack_plus_total - self.attack_plus
             self.attack_plus = attack_plus_total
-            print("当前攻击力" + self.attack)
+            print("当前攻击力" + str(self.attack))
         # 伤害计算
-        phy, ele = 0
+        phy, ele = 0, 0
         if act == 1:    # 普通攻击
             phy = self.attack
         elif act == 2:  # 盛夏燔祭

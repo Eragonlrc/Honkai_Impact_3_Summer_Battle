@@ -24,7 +24,7 @@ class Kosma(Hero):
         if act == 1:    # 普通攻击
             phy = self.attack
         elif act == 2:  # 邪渊之钩
-            if opnt.status['torn'] > 0:
+            if opnt.status['torn'] + opnt.status['torn_buf_2'] > 0:     # 对方有撕裂状态，或对方比科斯魔速度快且撕裂状态下回合消失
                 ele = 3 * 4
         # 伤害结算
         if act == 1:
@@ -46,7 +46,7 @@ class Kosma(Hero):
             if act == 1 and random.random() < 0.15 or act == 2 and random.random() < 0.47799375:
                 print("科斯魔技能[不归之爪]触发，" + opnt.name + "陷入撕裂状态")
                 if self.speed > opnt.speed:
-                    opnt.status['torn_buf'] = 1
+                    opnt.status['torn_buf_1'] = 1
                 else:
                     opnt.status['torn'] = 3
         # 状态更新

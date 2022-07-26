@@ -21,7 +21,7 @@ class Griseo(Hero):
         格蕾修护盾通过重构suffer函数实现
         """
         if self.shield == 0:    # 无盾
-            return super(Griseo, self).suffer(opnt, physical, elemental, loss)
+            return super(Griseo, self).suffer(opnt, physical, elemental)
         # 物理伤害结算
         if physical > 0:
             damage = physical - self.defence

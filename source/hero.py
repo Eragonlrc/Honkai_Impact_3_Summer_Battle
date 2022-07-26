@@ -1,3 +1,8 @@
+import logging
+
+logging.basicConfig(level=logging.INFO, format='%(massage)s')
+
+
 class Hero(object):
     """
     英桀的基类，定义基本属性和基本框架
@@ -16,12 +21,13 @@ class Hero(object):
         所有状态的初始化，用字典{名称, 层数}存储
         """
         self.status.update({'weak': 0})         # 虚弱(爱莉希雅): 下次行动时攻击力下降6点，行动不包括释放被动技能
-        self.status.update({'sealed': 0})         # 跳过(阿波尼亚): 本回合不进行任何行动
+        self.status.update({'sealed': 0})       # 跳过(阿波尼亚): 本回合不进行任何行动
         self.status.update({'stunned': 0})      # 昏迷(梅比乌斯): 下次无法行动
         self.status.update({'silenced': 0})     # 沉默(阿波尼亚): 本回合内主被动均失效，只能使用普通攻击，特殊标注除外
         self.status.update({'chaos': 0})        # 混乱(维尔薇): 下次普通攻击伤害返还自身，无视回合数
         self.status.update({'torn': 0})         # 撕裂(科斯魔): 每回合减少4点生命值，持续3回合，重复触发刷新状态，混乱状态下触发时状态返还自身
-        self.status.update({'torn_buf': 0})     # 撕裂缓冲(科斯魔): 科斯魔比对方速度快时，先附加这个状态，对方行动时将其转为撕裂，下回合对方行动时再造成伤害
+        self.status.update({'torn_buf_1': 0})   # 撕裂缓冲1(科斯魔): 科斯魔比对方速度快时，先附加这个状态，对方行动时将其转为撕裂，下回合对方行动时再造成伤害
+        self.status.update({'torn_buf_2': 0})   # 撕裂缓冲2(科斯魔): 科斯魔比对方慢时，撕裂第3回合结束时，将撕裂转为缓冲2，科斯魔本回合释放技能时可触发元素伤害，下回合时再消除
         self.status.update({'charge': 0})       # 蓄力(华): 本回合不进行攻击，自身至下次行动前防御力提升3点，下次攻击时额外造成10~33点元素伤害(此伤害不受混乱状态影响)
         self.status.update({'miss': 0})         # 闪避(樱): 闪避本回合所有攻击
         self.status.update({'rest': 0})         # 休息(千劫): 本回合不进行任何行动
@@ -86,7 +92,7 @@ class Hero(object):
         :param phy: 普通攻击伤害
         :return: 实际造成的伤害，对自己造成伤害时为负数
         """
-        print(self.name + "对" + opnt.name + "普攻，")
+        print(self.name + "对" + opnt.name + "普攻，", end="")
         if self.status['chaos'] == 1:
             print("混乱状态生效，" + self.name + "对" + self.name, end="")
             self.status['chaos'] = 0
@@ -109,8 +115,10 @@ class Hero(object):
         if self.status['weak'] == 1:
             self.attack -= 6
         if self.status['torn'] > 0:
-            print("[不归之爪]效果发动，")
+            print("[不归之爪]效果发动，", end="")
             self.bleed(4)
+        if self.status['torn_buf_2'] == 1:  # 此时应该是撕裂状态消失后的第一个回合
+            self.status['torn_buf_2'] = 0
 
     def decide_action(self, turns, cd):
         """
@@ -149,6 +157,8 @@ class Hero(object):
                 self.status['weak'] = 0
         if self.status['torn'] > 0:
             self.status['torn'] -= 1
+            if self.status['torn'] == 0 and self.speed > 19:    # 下回合撕裂状态消失，且对方比科斯魔速度快，将torn转为torn_buf_2
+                self.status['torn_buf_2'] = 1   # 硬编码科斯魔速度，实现得比较烂，但凑合能用
         if self.status['miss'] == 1:
             self.status['miss'] = 0
         if self.status['sealed'] == 1:
@@ -159,6 +169,6 @@ class Hero(object):
             self.status['silenced'] = 0
         if self.status['rest'] == 1 and action == 0:    # 处于休息状态且本回合未行动(而不是施放主动技能)
             self.status['rest'] = 0
-        if self.status['torn_buf'] == 1:    # 自身速度比科斯魔慢，本回合自身行动结束时，将torn_buf转为torn，下回合进入撕裂状态
-            self.status['torn_buf'] = 0
+        if self.status['torn_buf_1'] == 1:    # 自身速度比科斯魔慢，本回合自身行动结束时，将torn_buf_1转为torn，下回合进入撕裂状态
+            self.status['torn_buf_1'] = 0
             self.status['torn'] = 3

@@ -1,5 +1,4 @@
 import random
-
 from hero import Hero
 
 
@@ -39,14 +38,15 @@ class Mobius(Hero):
         if opnt.health == 0:    # 对方战败
             return
         # 被动判定
-        if act == 1 and damage != 0:    # 普通攻击且造成伤害
-            if random.random() < 0.33:  # 33%概率
-                print("梅比乌斯发动技能[不稳定物质]")
-                if damage > 0:  # 未被混乱
-                    opnt.defence -= 3
-                    print(opnt.name + "防御力下降3点，当前防御" + opnt.defence)
-                elif damage < 0:  # 被混乱
-                    self.defence -= 3
-                    print("梅比乌斯防御力下降3点，当前防御" + self.defence)
+        if self.status['silenced'] == 0:    # 未被沉默
+            if act == 1 and damage != 0:    # 普通攻击且造成伤害
+                if random.random() < 0.33:  # 33%概率
+                    print("梅比乌斯发动技能[不稳定物质]")
+                    if damage > 0:  # 未被混乱
+                        opnt.defence -= 3
+                        print(opnt.name + "防御力下降3点，当前防御" + str(opnt.defence))
+                    elif damage < 0:  # 被混乱
+                        self.defence -= 3
+                        print("梅比乌斯防御力下降3点，当前防御" + str(self.defence))
         # 状态更新
         self.status_change(act)
